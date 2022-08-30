@@ -1,5 +1,5 @@
 from sklearn.metrics import mean_absolute_error
-from utils import *
+from chemproppred.utils import *
 
 
 def make_xgb_data(data_path, file_name="dists_resids"):

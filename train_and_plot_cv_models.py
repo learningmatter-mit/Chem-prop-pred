@@ -8,8 +8,8 @@ import torch
 
 from chemprop.args import TrainArgs, PredictArgs
 from chemprop.train import cross_validate, run_training, make_predictions
-from chemarr.utils import plot_hexbin
-from chemarr.make_balanced_train import make_balanced_data
+from chemproppred.utils import plot_hexbin
+from chemproppred.make_balanced_train import make_balanced_data
 
 
 PATH_CHEM = os.getcwd()
@@ -116,15 +116,15 @@ if __name__ == "__main__":
                         help='Should the models be trained or not (takes couple of hours)')
     parser.add_argument('--plot_parity', choices=['true', 'false'], default='false',
                         help='Should the data be plotted, works only when data is made and predicted')
-    parser.parse_args()
+    args = parser.parse_args()
     
-    if parser.make_data == "true":
+    if args.make_data == "true":
         print("Creating the cross validation data files for training!")
         make_balanced_data(DATADIR, f'{PATH_CHEM}/data/clean_train_data.csv')
-    if parser.train_predict == "true":
+    if args.train_predict == "true":
         print("Training loop begins!")
         make_training_predictions(DATADIR,MODELDIR)
-    if parser.plot_parity == "true":
+    if args.plot_parity == "true":
         print("Plotting results")
         plot_parity(DATADIR)
         

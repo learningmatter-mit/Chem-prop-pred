@@ -13,7 +13,7 @@ def read(fname):
 
 
 setup(
-    name='chem-prop-pred',
+    name='chemproppred',
     version='v0.1.0',
     author='Gabe Bradford, Jurgis Ruza',
     description='Chemistry-Informed Machine Learning for Polymer Electrolyte Discovery',

@@ -1,5 +1,5 @@
 import os
-from chemarr.utils import *
+from chemproppred.utils import *
 
 #function to fill in needed data
 def process_df(df,n_bits,req_length):

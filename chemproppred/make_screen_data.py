@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from chemarr.utils import *
+from chemproppred.utils import *
 
 def make_screening_data(data_folder, data_path):
     #read in screening data
