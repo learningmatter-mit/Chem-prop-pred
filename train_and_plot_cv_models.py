@@ -17,21 +17,25 @@ DATADIR = f"{PATH_CHEM}/data/cross_val_data"
 TYPE = "arr"
 MODELDIR = f"{PATH_CHEM}/models"
 
-def make_training_predictions():
+def make_training_predictions(data_path, model_path):
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
+    if not os.path.exists(model_path):
+        os.makedirs(model_path)
     for ROUNDNUM in range(1,5): 
         for TESTNUM in range(2,12):  
 
-            TRAIN=f"{DATADIR}/s_train_{TESTNUM}.csv"
-            TRAINFEATS=f"{DATADIR}/f_train_{TESTNUM}.csv"
+            TRAIN=f"{data_path}/s_train_{TESTNUM}.csv"
+            TRAINFEATS=f"{data_path}/f_train_{TESTNUM}.csv"
 
-            VAL=f"{DATADIR}/s_cv_{TESTNUM}.csv"
-            VALFEATS=f"{DATADIR}/f_cv_{TESTNUM}.csv"
+            VAL=f"{data_path}/s_cv_{TESTNUM}.csv"
+            VALFEATS=f"{data_path}/f_cv_{TESTNUM}.csv"
 
-            TEST=f"{DATADIR}/s_test_{TESTNUM}.csv"
-            TESTFEATS=f"{DATADIR}/f_test_{TESTNUM}.csv"
+            TEST=f"{data_path}/s_test_{TESTNUM}.csv"
+            TESTFEATS=f"{data_path}/f_test_{TESTNUM}.csv"
 
-            PREDS=f"{DATADIR}/{TYPE}/preds_{TESTNUM}_{ROUNDNUM}.csv"
-            SAVEDIR=f"{MODELDIR}/checkpoints/check{ROUNDNUM}_{TESTNUM}"
+            PREDS=f"{data_path}/{TYPE}/preds_{TESTNUM}_{ROUNDNUM}.csv"
+            SAVEDIR=f"{model_path}/checkpoints/check{ROUNDNUM}_{TESTNUM}"
 
             argument = [
                 "--data_path",f"{TRAIN}",
@@ -60,9 +64,9 @@ def make_training_predictions():
             # TRAIN THE MODEL
             cross_validate(args=train_args, train_func=run_training)
             
-            TRAIN_FULL=f"{DATADIR}/s_full.csv"
-            TRAINFEATS_FULL=f"{DATADIR}/f_full.csv"
-            PREDS=f"{DATADIR}/preds/preds_screen_{ROUNDNUM}_{TESTNUM}.csv"
+            TRAIN_FULL=f"{data_path}/s_full.csv"
+            TRAINFEATS_FULL=f"{data_path}/f_full.csv"
+            PREDS=f"{data_path}/preds/preds_screen_{ROUNDNUM}_{TESTNUM}.csv"
 
             pred_args = [
                 "--test_path", f"{TRAIN_FULL}",
@@ -74,23 +78,23 @@ def make_training_predictions():
 
             make_predictions(args=PredictArgs().parse_args(pred_args))
 
-def plot_parity():
-    DATA_PATH = f'{DATADIR}/preds'
-    paths_df = os.listdir(DATA_PATH)
+def plot_parity(data_path):
+    preds_path = f'{data_path}/preds'
+    paths_df = os.listdir(preds_path)
 
-    df_ref = pd.read_csv(f"{DATA_PATH}/{paths_df[0]}")
+    df_ref = pd.read_csv(f"{preds_path}/{paths_df[0]}")
     conductivities = [df_ref.conductivity.values]
     smiles = df_ref.smiles.values
 
     for i in paths_df[1:]:
-        df = pd.read_csv(f"{DATA_PATH}/{i}")
+        df = pd.read_csv(f"{preds_path}/{i}")
         if (df.smiles.values == smiles).all():
             conductivities.append(df.conductivity.values)
         else:
             raise ValueError(f"The smiles of {paths_df[0]} doesn't line up with {paths_df[1]}")
     pred_cond = np.array(conductivities).mean(axis=0)
 
-    TRAIN=f"{DATADIR}/s_full.csv"
+    TRAIN=f"{data_path}/s_full.csv"
     df_true = pd.read_csv(TRAIN)
 
     fig, ax = plt.subplots(1,1, figsize=(10,10))
@@ -102,7 +106,7 @@ def plot_parity():
     cb.set_label('Number of points',fontdict={'size':18})
     plt.tick_params(axis='both', which='major', labelsize=16)
     cb.ax.tick_params(labelsize=16)
-    plt.savefig(f'{DATADIR}/conductivity_parity_plot.png')
+    plt.savefig(f'{data_path}/conductivity_parity_plot.png')
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Processing input parameters for cross validation training')
@@ -119,10 +123,10 @@ if __name__ == "__main__":
         make_balanced_data(DATADIR, f'{PATH_CHEM}/data/clean_train_data.csv')
     if parser.train_predict == "true":
         print("Training loop begins!")
-        make_training_predictions()
+        make_training_predictions(DATADIR,MODELDIR)
     if parser.plot_parity == "true":
         print("Plotting results")
-        plot_parity()
+        plot_parity(DATADIR)
         
     
     

@@ -79,5 +79,5 @@ if __name__ == "__main__":
         make_screening_data(DATADIR, f'{PATH_CHEM}/data/clean_train_data.csv')
     if parser.train_predict == "true":
         print("Training loop begins!")
-        train_and_predict()
+        train_and_predict(DATADIR, MODELDIR)
         
