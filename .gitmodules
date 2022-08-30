@@ -1,0 +1,3 @@
+[submodule "ChemArr"]
+	path = ChemArr
+	url = git@github.mit.edu:gbrad/ChemArr.git
