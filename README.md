@@ -1,2 +1,21 @@
-# ChemArr
-Repository for predicting conductivities through Arrhenious parameters for polymer electrolytes.
+# ChemPropPred
+
+Repository for predicting conductivities through Arrhenious parameters for polymer electrolytes using a modified version of the original chemprop model described in [Analyzing Learned Molecular Representations for Property Prediction](https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237) and available at https://github.com/chemprop/chemprop. The original model was modified to incorporate Arrhenius behavior in its predictions to improve its performance on electrolyte prediction tasks, although it can be applied to any system that follows Arrhenius behavior. All arguments necessary to operate the model with Arrhenius behavior are described under [Running Arrhenius Chemprop](#running-arrhenius-chemprop). Portions of the original chemprop readme are kept intact below for reference during implementation.
+
+#### Installation Steps
+
+1. `git submodule init`
+2. `git submodule update`
+3. `cd chemarr`
+4. `conda env create -f environment.yml`
+5. `conda activate chemprop` (Name of the environment variable in the yml file, can be changed)
+6. `pip install -e .`
+7. `cd ../`
+8. `pip install -e .` (Installs the files necessary to launch the training)
+
+#### Scripts and paper reproduction
+
+`train_and_plot_cv_models.py` is a python script that will create a 10fold cross validation split for training the model and reproducing the parity plots from the paper.
+
+`train_pred_polyinfo.py` is a script that will train the model on all of the training data and use them to predict on the polymers that were scrapped from the PolyInfo database.
+
