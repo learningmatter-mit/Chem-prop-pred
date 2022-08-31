@@ -11,15 +11,18 @@ import chemprop
 from chemprop.args import TrainArgs, PredictArgs
 from chemprop.train import cross_validate, run_training, make_predictions
 
-from chemarr.make_screen_data import make_screening_data
+from chemproppred.make_screen_data import make_screening_data
+from chemproppred.screen_polys import screen_poly
 
 
 PATH_CHEM = os.getcwd()
-DATADIR = f"{PATH_CHEM}/data/polyinfo_data"
+DATADIR = f"{PATH_CHEM}/data/cross_val_data"
 TYPE = "arr"
-MODELDIR = f"{PATH_CHEM}/models"
+MODELDIR = f"{PATH_CHEM}/models/screen"
+SAVEPATH = f"{PATH_CHEM}/data/polyinfo"
+PREDS_PATH = f"{DATADIR}/preds_screen"
 
-def train_and_predict(data_path, model_path):
+def train_and_predict(data_path, model_path, preds_path):
     if not os.path.exists(data_path):
         os.makedirs(data_path)
     if not os.path.exists(model_path):
@@ -30,7 +33,7 @@ def train_and_predict(data_path, model_path):
     TEST = f"{data_path}/s_screen.csv"
     TESTFEATS = f"{data_path}/f_screen.csv"
 
-    PREDS=  f"{data_path}/preds_screen.csv"
+    PREDS=  f"{preds_path}/preds_screen.csv"
     SAVEDIR = model_path
 
     #train chemprop model
@@ -39,7 +42,7 @@ def train_and_predict(data_path, model_path):
     "--features_path", f"{TRAINFEATS}",
     "--save_dir", f"{SAVEDIR}",
     "--dataset_type", "regression",
-    "--split_size", "0.89", "0.1", "0.01",
+    "--split_size", "0.95", "0.04", "0.01",
     "--metric", "mae",
     "--arr_vtf","arr",
     "--quiet",
@@ -71,13 +74,17 @@ if __name__ == "__main__":
     parser.add_argument('--make_data', choices=['true', 'false'], default='false', 
                         help='Determines whether the data should be generated or not')
     parser.add_argument('--train_predict', choices=['true', 'false'], default='false',
-                        help='Should the models be trained or not (takes couple of hours)')
-    parser.parse_args()
+                        help='Train the model on all the data and predict on polyinfo data')
+    parser.add_argument('--polyinfo_datafiles', choices=['true', 'false'], default='false',
+                        help='Generate easily viewable files for the polyinfo data from the predicitons')
+    args = parser.parse_args()
     
-    if parser.make_data == "true":
+    if args.make_data == "true":
         print("Creating the cross validation data files for training!")
-        make_screening_data(DATADIR, f'{PATH_CHEM}/data/clean_train_data.csv')
-    if parser.train_predict == "true":
+        make_screening_data(DATADIR, f'{PATH_CHEM}/data/polyinfo_5salts_4conc.csv')
+    if args.train_predict == "true":
         print("Training loop begins!")
-        train_and_predict(DATADIR, MODELDIR)
+        train_and_predict(DATADIR, MODELDIR, PREDS_PATH) 
+    if args.polyinfo_datafiles == "true":
+        screen_poly(DATADIR, SAVEPATH, PREDS_PATH)
         

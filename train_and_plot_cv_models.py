@@ -106,7 +106,7 @@ def plot_parity(data_path):
     cb.set_label('Number of points',fontdict={'size':18})
     plt.tick_params(axis='both', which='major', labelsize=16)
     cb.ax.tick_params(labelsize=16)
-    plt.savefig(f'{data_path}/conductivity_parity_plot.png')
+    plt.savefig(f'{preds_path}/conductivity_parity_plot.png')
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Processing input parameters for cross validation training')

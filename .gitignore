@@ -1,5 +1,7 @@
 # Local additions
 data/cross_val_data
+data/polyinfo
+models
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

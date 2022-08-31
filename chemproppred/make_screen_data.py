@@ -4,8 +4,8 @@ from chemproppred.utils import *
 
 def make_screening_data(data_folder, data_path):
     #read in screening data
-    if not os.path.exists(data_path):
-        os.makedirs(data_path)
+    if not os.path.exists(data_folder):
+        os.makedirs(data_folder)
     
     df = pd.read_csv(data_path)
 
@@ -42,9 +42,6 @@ def make_screening_data(data_folder, data_path):
     poly_cols = [col for col in morgan_df.columns if 'PolyMorgan' in col]
 
     xgb_cols = real_val_cols+['temperature']+poly_cols+salt_cols+['monomer','salt smiles']
-
-    #save xgboost and chemprop screening files
-    data_folder='data/polysaltGNN'
 
     xgb_full = morgan_df[xgb_cols]
     chem_full_s = morgan_df[['smiles','temperature']]
