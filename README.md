@@ -23,3 +23,6 @@ Though all of these commands can be run separately to test and analyze the separ
 `train_pred_polyinfo.py` is a script that will train the model on all of the training data and use them to predict on the polymers that were scrapped from the PolyInfo database.
 You can run `python train_pred_polyinfo.py --help` to see the possible commands of predicting on the PolyInfo dataset. To create the datasets, train the model and predict the conductivities of the PolyInfo dataset run `python train_pred_polyinfo.py --make_data true --train_predict true --polyinfo_datafiles true`
 
+For both training procedures the usage of GPU's has been by default turned off, can be enabled by having a `--gpu` argument flag.
+
+To see information on how to use your own data with these models, how to train the models more customly check it at the [ChemArr](https://github.mit.edu/gbrad/ChemArr) repo.
