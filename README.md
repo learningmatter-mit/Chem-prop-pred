@@ -21,5 +21,5 @@ You can run `python train_and_plot_cv_models.py --help` to see the possible comm
 Though all of these commands can be run separately to test and analyze the separate steps of creating the cross validated data sets, the training and the prediction.
 
 `train_pred_polyinfo.py` is a script that will train the model on all of the training data and use them to predict on the polymers that were scrapped from the PolyInfo database.
-You can run `python train_pred_polyinfo.py --help` to see the possible commands of predicting on the PolyInfo dataset. To create the datasets, train the model and predict the conductivities of the PolyInfo dataset run ``python train_pred_polyinfo.py --make_data true --train_predict true --polyinfo_datafiles true`
+You can run `python train_pred_polyinfo.py --help` to see the possible commands of predicting on the PolyInfo dataset. To create the datasets, train the model and predict the conductivities of the PolyInfo dataset run `python train_pred_polyinfo.py --make_data true --train_predict true --polyinfo_datafiles true`
 
