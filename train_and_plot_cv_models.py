@@ -17,7 +17,7 @@ DATADIR = f"{PATH_CHEM}/data/cross_val_data"
 TYPE = "arr"
 MODELDIR = f"{PATH_CHEM}/models"
 
-def make_training_predictions(data_path, model_path):
+def make_training_predictions(data_path, model_path, gpu=False):
     if not os.path.exists(data_path):
         os.makedirs(data_path)
     if not os.path.exists(model_path):
@@ -54,10 +54,15 @@ def make_training_predictions(data_path, model_path):
                 "--ffn_num_layers", "3",
                 "--hidden_size", "2300",
                 "--batch_size", "100",
-                "--gpu", "0",
                 "--pytorch_seed", "3",
                 "--epochs", "12",
             ]
+
+            if gpu:
+                argument.append("--gpu")
+                argument.append("0")
+            else:
+                argument.append("--no_cuda")
 
             train_args = TrainArgs().parse_args(argument)
             
@@ -116,6 +121,8 @@ if __name__ == "__main__":
                         help='Should the models be trained or not (takes couple of hours)')
     parser.add_argument('--plot_parity', choices=['true', 'false'], default='false',
                         help='Should the data be plotted, works only when data is made and predicted')
+    parser.add_argument('--gpu', choices=['true', 'false'], default='false',
+                        help='The model is trained on cuda enabled GPU, default false - training on CPU')
     args = parser.parse_args()
     
     if args.make_data == "true":
@@ -123,7 +130,7 @@ if __name__ == "__main__":
         make_balanced_data(DATADIR, f'{PATH_CHEM}/data/clean_train_data.csv')
     if args.train_predict == "true":
         print("Training loop begins!")
-        make_training_predictions(DATADIR,MODELDIR)
+        make_training_predictions(DATADIR, MODELDIR, args.gpu)
     if args.plot_parity == "true":
         print("Plotting results")
         plot_parity(DATADIR)

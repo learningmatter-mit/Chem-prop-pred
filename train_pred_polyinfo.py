@@ -22,7 +22,7 @@ MODELDIR = f"{PATH_CHEM}/models/screen"
 SAVEPATH = f"{PATH_CHEM}/data/polyinfo"
 PREDS_PATH = f"{DATADIR}/preds_screen"
 
-def train_and_predict(data_path, model_path, preds_path):
+def train_and_predict(data_path, model_path, preds_path, gpu=False):
     if not os.path.exists(data_path):
         os.makedirs(data_path)
     if not os.path.exists(model_path):
@@ -50,10 +50,15 @@ def train_and_predict(data_path, model_path, preds_path):
     "--dropout", "0",
     "--ffn_num_layers", "3",
     "--hidden_size", "2400",
-    "--gpu", "0",
     "--epochs", "25",
     "--pytorch_seed","5",
     ]
+    
+    if gpu:
+        argument.append("--gpu")
+        argument.append("0")
+    else:
+        argument.append("--no_cuda")
 
     train_args = TrainArgs().parse_args(argument)
 
@@ -77,6 +82,8 @@ if __name__ == "__main__":
                         help='Train the model on all the data and predict on polyinfo data')
     parser.add_argument('--polyinfo_datafiles', choices=['true', 'false'], default='false',
                         help='Generate easily viewable files for the polyinfo data from the predicitons')
+    parser.add_argument('--gpu', choices=['true', 'false'], default='false',
+                        help='The model is trained on cuda enabled GPU, default false - training on CPU')
     args = parser.parse_args()
     
     if args.make_data == "true":
@@ -84,7 +91,7 @@ if __name__ == "__main__":
         make_screening_data(DATADIR, f'{PATH_CHEM}/data/polyinfo_5salts_4conc.csv')
     if args.train_predict == "true":
         print("Training loop begins!")
-        train_and_predict(DATADIR, MODELDIR, PREDS_PATH) 
+        train_and_predict(DATADIR, MODELDIR, PREDS_PATH, args.gpu) 
     if args.polyinfo_datafiles == "true":
         screen_poly(DATADIR, SAVEPATH, PREDS_PATH)
         
