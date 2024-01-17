@@ -17,7 +17,7 @@ DATADIR = f"{PATH_CHEM}/data/cross_val_data"
 TYPE = "arr"
 MODELDIR = f"{PATH_CHEM}/models"
 
-def make_training_predictions(data_path, model_path, gpu=False):
+def make_training_predictions(data_path, model_path, gpu='false', gpu_number=0):
     if not os.path.exists(data_path):
         os.makedirs(data_path)
     if not os.path.exists(model_path):
@@ -58,9 +58,9 @@ def make_training_predictions(data_path, model_path, gpu=False):
                 "--epochs", "12",
             ]
 
-            if gpu:
+            if gpu=='true':
                 argument.append("--gpu")
-                argument.append("0")
+                argument.append(str(gpu_number))
             else:
                 argument.append("--no_cuda")
 
@@ -123,6 +123,8 @@ if __name__ == "__main__":
                         help='Should the data be plotted, works only when data is made and predicted')
     parser.add_argument('--gpu', choices=['true', 'false'], default='false',
                         help='The model is trained on cuda enabled GPU, default false - training on CPU')
+    parser.add_argument('--gpu_number', default='0',
+                        help='Cuda device, if no GPU leave this empty')
     args = parser.parse_args()
     
     if args.make_data == "true":

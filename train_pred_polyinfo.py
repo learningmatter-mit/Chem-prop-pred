@@ -22,7 +22,7 @@ MODELDIR = f"{PATH_CHEM}/models/screen"
 SAVEPATH = f"{PATH_CHEM}/data/polyinfo"
 PREDS_PATH = f"{DATADIR}/preds_screen"
 
-def train_and_predict(data_path, model_path, preds_path, gpu=False):
+def train_and_predict(data_path, model_path, preds_path, gpu='false', gpu_number=0):
     if not os.path.exists(data_path):
         os.makedirs(data_path)
     if not os.path.exists(model_path):
@@ -54,9 +54,9 @@ def train_and_predict(data_path, model_path, preds_path, gpu=False):
     "--pytorch_seed","5",
     ]
     
-    if gpu:
+    if gpu=='true':
         argument.append("--gpu")
-        argument.append("0")
+        argument.append(str(gpu_number))
     else:
         argument.append("--no_cuda")
 
@@ -84,6 +84,8 @@ if __name__ == "__main__":
                         help='Generate easily viewable files for the polyinfo data from the predicitons')
     parser.add_argument('--gpu', choices=['true', 'false'], default='false',
                         help='The model is trained on cuda enabled GPU, default false - training on CPU')
+    parser.add_argument('--gpu_number', default='0',
+                        help='Cuda device, if no GPU leave this empty')
     args = parser.parse_args()
     
     if args.make_data == "true":
